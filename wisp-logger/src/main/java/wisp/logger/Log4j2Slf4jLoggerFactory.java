@@ -37,10 +37,14 @@ import java.io.*;
  * @author <a href="mailto:kyle.downey@gmail.com">Kyle F. Downey</a>
  */
 public class Log4j2Slf4jLoggerFactory implements Slf4jLoggerFactory {
+    static {
+        initDefaultLogConfig();
+    }
+
     @Override
     public void configure(Config config) {
-        if (config.hasPath("logging.config")) {
-            String logConfigPath = config.getString("logging.config");
+        if (config.hasPath("wisp.logger")) {
+            String logConfigPath = config.getString("logConfig");
             InputStream in = getClass().getResourceAsStream(logConfigPath);
             if (in == null) {
                 try {
@@ -57,8 +61,6 @@ public class Log4j2Slf4jLoggerFactory implements Slf4jLoggerFactory {
                 throw new IllegalStateException("unable to init log4j2 from " + logConfigPath, e);
             }
             Configurator.initialize(null, source);
-        } else {
-            initDefaultLogConfig();
         }
     }
 
