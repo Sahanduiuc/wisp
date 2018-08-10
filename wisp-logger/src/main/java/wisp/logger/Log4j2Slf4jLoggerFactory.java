@@ -63,6 +63,12 @@ public class Log4j2Slf4jLoggerFactory implements Slf4jLoggerFactory {
     }
 
     @Override
+    public void start() {
+        initDefaultLogConfig();
+        getLogger(getClass()).info("initialized logging layer");
+    }
+
+    @Override
     public Logger getLogger(String name) {
         return LoggerFactory.getLogger(name);
     }

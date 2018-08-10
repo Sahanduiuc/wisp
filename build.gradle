@@ -122,7 +122,6 @@ project(':wisp-logger') {
 project(':wisp-boot') {
     dependencies {
         compile project(':wisp-api')
-        compile project(':wisp-logger')
         compile 'args4j:args4j:2.33',
                 'com.google.code.findbugs:jsr305:3.0.2',
                 'com.google.guava:guava:25.1-jre',

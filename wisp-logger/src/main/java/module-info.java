@@ -8,5 +8,5 @@ module wisp.logger {
     requires slf4j.api;
     requires typesafe.config;
 
-    provides wisp.logger.Slf4jLoggerFactory with wisp.logger.Log4j2Slf4jLoggerFactory;
+    provides wisp.api.ServiceModule with wisp.logger.Log4j2Slf4jLoggerFactory;
 }

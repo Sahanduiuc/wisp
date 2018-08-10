@@ -4,6 +4,6 @@ module wisp.boot {
    requires com.google.common;
    requires jsr305;
    requires typesafe.config;
-
+   
    uses wisp.api.ServiceModule;
 }
