@@ -15,6 +15,8 @@
  */
 package wisp.boot;
 
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import wisp.api.Destroyable;
 import wisp.api.ServiceModule;
 
@@ -24,11 +26,12 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ServiceLoader;
-import java.util.Set;
+import java.util.*;
 
 /**
- * TODO: add comment
+ * Main entry point for the Wisp microservices server. WispBoot takes care of loading all {@link ServiceModule}
+ * instances from a directory provided on the command line and manages their lifecycles: linking, configuring
+ * and then starting each discovered {@link ServiceModule}.
  *
  * @author <a href="mailto:kyle.downey@gmail.com">Kyle F. Downey</a>
  */
@@ -44,13 +47,71 @@ public class WispBoot implements Destroyable {
         locator = new DefaultServiceLocator();
         locator.startAll();
 
-        System.out.println("[wisp] Primordial boot layer modules:");
-        for (var module : ModuleLayer.boot().modules()) {
-            if (!module.getName().startsWith("jdk") && !module.getName().startsWith("java")) {
-                System.out.println("         " + module.getName());
+        loadGeneration2(baseDir);
+    }
+
+    private void loadGeneration2(String baseDir) {
+        var moduleDirs = new ArrayList<ServiceModuleDir>();
+        var smlibPath = Paths.get(baseDir, "modules").toAbsolutePath().normalize();
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(smlibPath, file -> Files.isDirectory(file))) {
+            for (Path path : stream) {
+                moduleDirs.add(new ServiceModuleDir(path));
             }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
+        var rootModuleNames = new TreeSet<String>();
+        var paths = new Path[moduleDirs.size()];
+        for (int i = 0; i < paths.length; i++) {
+            paths[i] = moduleDirs.get(i).getPath();
+            rootModuleNames.add(moduleDirs.get(i).getRootModuleName());
+        }
+        var finder = ModuleFinder.of(paths);
+        var cf = ModuleLayer.boot().configuration().resolve(finder, ModuleFinder.of(), rootModuleNames);
+
+        // Create new Jigsaw Layer with configuration and ClassLoader
+        var layer = ModuleLayer.boot().defineModulesWithOneLoader(cf, ClassLoader.getSystemClassLoader());
+
+        System.out.println("Created layer containing the following modules:");
+        for (var module : layer.modules()) {
+            var moduleName = module.getName();
+            if (rootModuleNames.contains(moduleName)) {
+                System.out.println("  * " + moduleName);
+            } else {
+                System.out.println("  - " + moduleName);
+            }
+        }
+        for (var smod : ServiceLoader.load(layer, ServiceModule.class)) {
+            locator.registerServiceModule(smod);
+        }
+
+        Config config = ConfigFactory.load(ClassLoader.getSystemClassLoader(), "boot.conf");
+
+        locator.configure(config);
+        locator.linkAll();
+        locator.startAll();
+    }
+
+    private class ServiceModuleDir {
+        private final Path path;
+        private final String rootModuleName;
+
+        private ServiceModuleDir(Path path) {
+            this.path = path;
+            this.rootModuleName = path.normalize().getFileName().toString();
+        }
+
+        public Path getPath() {
+            return path;
+        }
+
+        private String getRootModuleName() {
+            return rootModuleName;
+        }
+    }
+
+    private void loadGeneration1(String baseDir) {
         Path smlibPath = Paths.get(baseDir, "modules").toAbsolutePath().normalize();
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(smlibPath, file -> Files.isDirectory(file))) {
             for (Path path : stream) {
@@ -62,7 +123,7 @@ public class WispBoot implements Destroyable {
 
                 var rootModuleName = path.getFileName().toString();
 
-                var modSearchPath = Paths.get(path.toString(), "mlib");
+                var modSearchPath = Paths.get(path.toString());
                 System.out.println("[" + smName + "] Searching for root module in " + modSearchPath);
                 var finder = ModuleFinder.of(modSearchPath);
                 var result = finder.find(rootModuleName);

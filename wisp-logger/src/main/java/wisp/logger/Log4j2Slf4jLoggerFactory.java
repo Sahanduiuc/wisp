@@ -64,7 +64,6 @@ public class Log4j2Slf4jLoggerFactory implements Slf4jLoggerFactory {
 
     @Override
     public void start() {
-        initDefaultLogConfig();
         getLogger(getClass()).info("initialized logging layer");
     }
 
@@ -77,7 +76,6 @@ public class Log4j2Slf4jLoggerFactory implements Slf4jLoggerFactory {
     public Logger getLogger(Class<?> clazz) {
         return LoggerFactory.getLogger(clazz);
     }
-
 
     private static void initDefaultLogConfig() {
         ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();

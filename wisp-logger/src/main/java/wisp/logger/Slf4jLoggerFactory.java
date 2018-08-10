@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import wisp.api.ServiceModule;
 
 /**
- * TODO: add comment
+ * Simple plugin interface which serves up a pre-configured SLF4J LoggerFactory.
  *
  * @author <a href="mailto:kyle.downey@gmail.com">Kyle F. Downey</a>
  */

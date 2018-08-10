@@ -28,10 +28,9 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ServiceLoader;
 
 /**
- * TODO: add comment
+ * Default implementation which tracks registered modules and extracts the supported service interfaces.
  *
  * @author <a href="mailto:kyle.downey@gmail.com">Kyle F. Downey</a>
  */
@@ -39,24 +38,16 @@ class DefaultServiceLocator implements ServiceLocator, Configurable, Destroyable
     private List<ServiceModule> loadedModules = new ArrayList<>();
     private Multimap<Class<?>, ServiceModule> modulesByInterface = HashMultimap.create();
 
-    DefaultServiceLocator() {
-        // load all services on the modulepath and cache them
-        for (ServiceModule service : ServiceLoader.load(ServiceModule.class)) {
-            loadedModules.add(service);
+    void registerServiceModule(ServiceModule smod) {
+        loadedModules.add(smod);
 
-            Class<?> serviceClazz = service.getClass();
-            do {
-                for (Class<?> interfaceClazz : serviceClazz.getInterfaces()) {
-                    modulesByInterface.put(interfaceClazz, service);
-                }
-                serviceClazz = serviceClazz.getSuperclass();
-            } while (serviceClazz != null);
-        }
-
-        // resolve dynamic linkages between services
-        for (ServiceModule service : this) {
-            service.link(this);
-        }
+        Class<?> serviceClazz = smod.getClass();
+        do {
+            for (Class<?> interfaceClazz : serviceClazz.getInterfaces()) {
+                modulesByInterface.put(interfaceClazz, smod);
+            }
+            serviceClazz = serviceClazz.getSuperclass();
+        } while (serviceClazz != null);
     }
 
     @SuppressWarnings("unchecked")
@@ -91,9 +82,14 @@ class DefaultServiceLocator implements ServiceLocator, Configurable, Destroyable
         }
     }
 
+    void linkAll() {
+        for (ServiceModule service : loadedModules) {
+            service.link(this);
+        }
+    }
+
     void startAll() {
         for (ServiceModule service : loadedModules) {
-            System.out.println("start: " + service);
             service.start();
         }
     }
