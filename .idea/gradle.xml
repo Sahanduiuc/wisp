@@ -10,6 +10,10 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/wisp-api" />
+            <option value="$PROJECT_DIR$/wisp-boot" />
+            <option value="$PROJECT_DIR$/wisp-logger" />
+            <option value="$PROJECT_DIR$/wisp-websocket" />
           </set>
         </option>
         <option name="useAutoImport" value="true" />

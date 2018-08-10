@@ -2,7 +2,21 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/io.cloudwall-wisp_main.iml" filepath="$PROJECT_DIR$/.idea/modules/io.cloudwall-wisp_main.iml" group="wisp" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/io.cloudwall-wisp_test.iml" filepath="$PROJECT_DIR$/.idea/modules/io.cloudwall-wisp_test.iml" group="wisp" />
       <module fileurl="file://$PROJECT_DIR$/wisp.iml" filepath="$PROJECT_DIR$/wisp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/wisp-api/wisp-api.iml" filepath="$PROJECT_DIR$/.idea/modules/wisp-api/wisp-api.iml" group="wisp-api" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/wisp-api/wisp-api_main.iml" filepath="$PROJECT_DIR$/.idea/modules/wisp-api/wisp-api_main.iml" group="wisp-api" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/wisp-api/wisp-api_test.iml" filepath="$PROJECT_DIR$/.idea/modules/wisp-api/wisp-api_test.iml" group="wisp-api" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/wisp-boot/wisp-boot.iml" filepath="$PROJECT_DIR$/.idea/modules/wisp-boot/wisp-boot.iml" group="wisp-boot" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/wisp-boot/wisp-boot_main.iml" filepath="$PROJECT_DIR$/.idea/modules/wisp-boot/wisp-boot_main.iml" group="wisp-boot" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/wisp-boot/wisp-boot_test.iml" filepath="$PROJECT_DIR$/.idea/modules/wisp-boot/wisp-boot_test.iml" group="wisp-boot" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/wisp-logger/wisp-logger.iml" filepath="$PROJECT_DIR$/.idea/modules/wisp-logger/wisp-logger.iml" group="wisp-logger" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/wisp-logger/wisp-logger_main.iml" filepath="$PROJECT_DIR$/.idea/modules/wisp-logger/wisp-logger_main.iml" group="wisp-logger" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/wisp-logger/wisp-logger_test.iml" filepath="$PROJECT_DIR$/.idea/modules/wisp-logger/wisp-logger_test.iml" group="wisp-logger" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/wisp-websocket/wisp-websocket.iml" filepath="$PROJECT_DIR$/.idea/modules/wisp-websocket/wisp-websocket.iml" group="wisp-websocket" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/wisp-websocket/wisp-websocket_main.iml" filepath="$PROJECT_DIR$/.idea/modules/wisp-websocket/wisp-websocket_main.iml" group="wisp-websocket" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/wisp-websocket/wisp-websocket_test.iml" filepath="$PROJECT_DIR$/.idea/modules/wisp-websocket/wisp-websocket_test.iml" group="wisp-websocket" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/wisp_main.iml" filepath="$PROJECT_DIR$/.idea/modules/wisp_main.iml" group="wisp" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/wisp_test.iml" filepath="$PROJECT_DIR$/.idea/modules/wisp_test.iml" group="wisp" />
     </modules>
