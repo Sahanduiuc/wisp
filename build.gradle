@@ -55,7 +55,7 @@ allprojects {
         archives sourcesJar
     }
 
-    task installmodules(type: Copy) {
+    task installModules(type: Copy) {
         into "$buildDir/modules"
         from configurations.runtime
         from jar
@@ -72,6 +72,31 @@ compileTestJava {
         ]
         classpath = files()
     }
+}
+
+task createBootImage(type: Copy) {
+    into "$buildDir/image/boot"
+    from "wisp-boot/build/modules"
+}
+
+task createLoggerImage(type: Copy) {
+    into "$buildDir/image/modules/wisp.logger"
+    exclude "args4j*.jar"
+    exclude "config*.jar"
+    exclude "wisp-api*.jar"
+    from "wisp-logger/build/modules"
+}
+
+task createWebsocketImage(type: Copy) {
+    into "$buildDir/image/modules/wisp.websocket"
+    exclude "args4j*.jar"
+    exclude "config*.jar"
+    exclude "jansi*.jar"
+    exclude "log4j*.jar"
+    exclude "slf4j*.jar"
+    exclude "wisp-api*.jar"
+    exclude "wisp-logger*.jar"
+    from "wisp-websocket/build/modules"
 }
 
 task wrapper(type: Wrapper) {

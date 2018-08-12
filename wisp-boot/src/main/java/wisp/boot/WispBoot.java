@@ -45,12 +45,6 @@ public class WispBoot implements Destroyable {
     @SuppressWarnings("WeakerAccess")
     void startAll(String baseDir) {
         locator = new DefaultServiceLocator();
-        locator.startAll();
-
-        loadGeneration2(baseDir);
-    }
-
-    private void loadGeneration2(String baseDir) {
         var moduleDirs = new ArrayList<ServiceModuleDir>();
         var smlibPath = Paths.get(baseDir, "modules").toAbsolutePath().normalize();
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(smlibPath, file -> Files.isDirectory(file))) {
@@ -93,6 +87,16 @@ public class WispBoot implements Destroyable {
         locator.startAll();
     }
 
+    @SuppressWarnings("unused")
+    void stopAll() {
+        locator.stopAll();
+    }
+
+    @Override
+    public void destroy() {
+
+    }
+
     private class ServiceModuleDir {
         private final Path path;
         private final String rootModuleName;
@@ -109,58 +113,5 @@ public class WispBoot implements Destroyable {
         private String getRootModuleName() {
             return rootModuleName;
         }
-    }
-
-    private void loadGeneration1(String baseDir) {
-        Path smlibPath = Paths.get(baseDir, "modules").toAbsolutePath().normalize();
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(smlibPath, file -> Files.isDirectory(file))) {
-            for (Path path : stream) {
-                var smName = path.normalize().getFileName().toString();
-
-                System.out.println("\n--------------------------------------------------------------------------------------------------------------------");
-                System.out.println("[" + smName + "] Initiating layer for ServiceModule: " + smName);
-                System.out.println("[" + smName + "] Loading modules from " + path.normalize().toString());
-
-                var rootModuleName = path.getFileName().toString();
-
-                var modSearchPath = Paths.get(path.toString());
-                System.out.println("[" + smName + "] Searching for root module in " + modSearchPath);
-                var finder = ModuleFinder.of(modSearchPath);
-                var result = finder.find(rootModuleName);
-                if (!result.isPresent()) {
-                    System.err.println("[" + smName + "] Error: Root module " + rootModuleName + " not found.");
-                } else {
-                    // Create Configuration based on the root module
-                    var cf = ModuleLayer.boot().configuration().resolve
-                            (finder, ModuleFinder.of(), Set.of(rootModuleName));
-
-                    // Create new Jigsaw Layer with configuration and ClassLoader
-                    var layer = ModuleLayer.boot().defineModulesWithOneLoader(cf, ClassLoader.getSystemClassLoader());
-
-                    System.out.println("[" + smName + "] Created layer containing the following modules:");
-                    for (var module : layer.modules()) {
-                        System.out.println("         " + module.getName());
-                    }
-                    for (var smod : ServiceLoader.load(layer, ServiceModule.class)) {
-                        smod.start();
-                    }
-                }
-
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-
-    }
-
-    @SuppressWarnings("unused")
-    void stopAll() {
-        locator.stopAll();
-    }
-
-    @Override
-    public void destroy() {
-
     }
 }
