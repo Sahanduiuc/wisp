@@ -29,7 +29,6 @@ import java.time.Period;
  */
 public interface Configuration {
     boolean hasPath(String path);
-    boolean hasPathOrNull(String path);
     boolean getBoolean(String path);
     int getInt(String path);
     long getLong(String path);

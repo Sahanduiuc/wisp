@@ -34,7 +34,7 @@ import java.time.Period;
 public class HoconConfigurationFactory implements ConfigurationFactory {
     @Override
     public boolean canHandle(Path sourceFilePath) {
-        return sourceFilePath.endsWith(".conf");
+        return sourceFilePath.getFileName().toString().endsWith(".conf");
     }
 
     @Override
@@ -57,11 +57,6 @@ public class HoconConfigurationFactory implements ConfigurationFactory {
         @Override
         public boolean hasPath(String path) {
             return config.hasPath(path);
-        }
-
-        @Override
-        public boolean hasPathOrNull(String path) {
-            return config.hasPathOrNull(path);
         }
 
         @Override

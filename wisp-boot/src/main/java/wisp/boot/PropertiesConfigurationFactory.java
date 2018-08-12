@@ -16,11 +16,13 @@
 
 package wisp.boot;
 
+import com.google.common.annotations.VisibleForTesting;
 import wisp.api.Configuration;
 import wisp.api.ConfigurationFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Period;
@@ -34,12 +36,17 @@ import java.util.Properties;
 public class PropertiesConfigurationFactory implements ConfigurationFactory {
     @Override
     public boolean canHandle(Path sourceFilePath) {
-        return sourceFilePath.endsWith(".properties");
+        return sourceFilePath.getFileName().toString().endsWith(".properties");
     }
 
     @Override
     public Configuration parse(Path sourceFilePath) throws IOException {
         var in = new FileInputStream(sourceFilePath.toFile());
+        return parse(in);
+    }
+
+    @VisibleForTesting
+    Configuration parse(InputStream in) throws IOException {
         Properties props = new Properties();
         props.load(in);
         return new PropertiesConfiguration(props);
@@ -55,11 +62,6 @@ public class PropertiesConfigurationFactory implements ConfigurationFactory {
         @Override
         public boolean hasPath(String path) {
             return props.containsKey(path);
-        }
-
-        @Override
-        public boolean hasPathOrNull(String path) {
-            return hasPath(path) || getString(path).isEmpty();
         }
 
         @Override
