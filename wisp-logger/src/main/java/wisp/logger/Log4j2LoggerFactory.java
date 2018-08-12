@@ -16,7 +16,6 @@
 
 package wisp.logger;
 
-import com.typesafe.config.Config;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
@@ -27,6 +26,8 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFact
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wisp.api.Configuration;
+import wisp.logger.api.Slf4jLoggerFactory;
 
 import java.io.*;
 
@@ -36,13 +37,13 @@ import java.io.*;
  *
  * @author <a href="mailto:kyle.downey@gmail.com">Kyle F. Downey</a>
  */
-public class Log4j2Slf4jLoggerFactory implements Slf4jLoggerFactory {
+public class Log4j2LoggerFactory implements Slf4jLoggerFactory {
     static {
         initDefaultLogConfig();
     }
 
     @Override
-    public void configure(Config config) {
+    public void configure(Configuration config) {
         if (config.hasPath("wisp.logger")) {
             String logConfigPath = config.getString("logConfig");
             InputStream in = getClass().getResourceAsStream(logConfigPath);

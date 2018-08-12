@@ -16,8 +16,6 @@
 
 package wisp.api;
 
-import java.util.Iterator;
-
 /**
  * A wrapper around {@link java.util.ServiceLoader} which provides additional
  * methods for looking up known services matching criteria.
@@ -25,6 +23,13 @@ import java.util.Iterator;
  * @author <a href="mailto:kyle.downey@gmail.com">Kyle F. Downey</a>
  */
 public interface ServiceLocator extends Iterable<ServiceModule> {
+    /**
+     * Gets the first returned ServiceModule implementing the given service interface.
+     */
     <T> T firstImplementing(Class<T> interfaceClazz);
-    <T> Iterator<T> allImplementing(Class<T> interfaceClazz);
+
+    /**
+     * Gets all matching ServiceModules implementing the given service interface.
+     */
+    <T> Iterable<T> allImplementing(Class<T> interfaceClazz);
 }

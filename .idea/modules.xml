@@ -17,8 +17,6 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/wisp-websocket/wisp-websocket.iml" filepath="$PROJECT_DIR$/.idea/modules/wisp-websocket/wisp-websocket.iml" group="wisp-websocket" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/wisp-websocket/wisp-websocket_main.iml" filepath="$PROJECT_DIR$/.idea/modules/wisp-websocket/wisp-websocket_main.iml" group="wisp-websocket" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/wisp-websocket/wisp-websocket_test.iml" filepath="$PROJECT_DIR$/.idea/modules/wisp-websocket/wisp-websocket_test.iml" group="wisp-websocket" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/wisp_main.iml" filepath="$PROJECT_DIR$/.idea/modules/wisp_main.iml" group="wisp" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/wisp_test.iml" filepath="$PROJECT_DIR$/.idea/modules/wisp_test.iml" group="wisp" />
     </modules>
   </component>
 </project>

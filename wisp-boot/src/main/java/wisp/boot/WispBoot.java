@@ -80,9 +80,10 @@ public class WispBoot implements Destroyable {
             locator.registerServiceModule(smod);
         }
 
+        // interim solution before we handle command line options for configuration
         Config config = ConfigFactory.load(ClassLoader.getSystemClassLoader(), "boot.conf");
+        locator.configure(new HoconConfigurationFactory().create(config));
 
-        locator.configure(config);
         locator.linkAll();
         locator.startAll();
     }
@@ -106,7 +107,7 @@ public class WispBoot implements Destroyable {
             this.rootModuleName = path.normalize().getFileName().toString();
         }
 
-        public Path getPath() {
+        private Path getPath() {
             return path;
         }
 

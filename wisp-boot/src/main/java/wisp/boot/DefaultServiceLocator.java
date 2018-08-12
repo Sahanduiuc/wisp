@@ -18,11 +18,7 @@ package wisp.boot;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import com.typesafe.config.Config;
-import wisp.api.Configurable;
-import wisp.api.Destroyable;
-import wisp.api.ServiceLocator;
-import wisp.api.ServiceModule;
+import wisp.api.*;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -58,8 +54,8 @@ class DefaultServiceLocator implements ServiceLocator, Configurable, Destroyable
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> Iterator<T> allImplementing(@Nonnull Class<T> interfaceClazz) {
-        return (Iterator<T>) modulesByInterface.get(interfaceClazz).iterator();
+    public <T> Iterable<T> allImplementing(@Nonnull Class<T> interfaceClazz) {
+        return (Iterable<T>) modulesByInterface.get(interfaceClazz);
     }
 
     @Override
@@ -69,7 +65,7 @@ class DefaultServiceLocator implements ServiceLocator, Configurable, Destroyable
     }
 
     @Override
-    public void configure(@Nonnull Config config) {
+    public void configure(@Nonnull Configuration config) {
         for (ServiceModule service : this) {
             service.configure(config);
         }

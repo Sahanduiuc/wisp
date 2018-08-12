@@ -17,11 +17,12 @@
 package wisp.api;
 
 /**
- * Callback interface implemented by components which can be configured with HOCON.
+ * Wrapper exception that just passes back to the caller the exception thrown by the configuration implementation.
  *
  * @author <a href="mailto:kyle.downey@gmail.com">Kyle F. Downey</a>
- * @see <a href="https://github.com/lightbend/config/blob/master/HOCON.md">HOCON</a>
  */
-public interface Configurable {
-    void configure(Configuration config);
+public class ConfigurationException extends RuntimeException {
+    public ConfigurationException(Throwable cause) {
+        super(cause);
+    }
 }

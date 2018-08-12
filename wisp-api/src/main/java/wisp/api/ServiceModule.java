@@ -16,8 +16,6 @@
 
 package wisp.api;
 
-import com.typesafe.config.Config;
-
 /**
  * Plugin which loads some functionality into the Wisp server.
  *
@@ -28,10 +26,16 @@ public interface ServiceModule extends Linkable, Configurable, Destroyable {
     default void link(ServiceLocator locator) { }
 
     @Override
-    default void configure(Config config) { }
+    default void configure(Configuration config) { }
 
+    /**
+     * Starts up provided services, e.g. opening sockets, starting threads, etc..
+     */
     default void start() { }
 
+    /**
+     * Cleanly shuts down provided services, e.g. closing resources, stopping threads, etc..
+     */
     default void stop() { }
 
     @Override

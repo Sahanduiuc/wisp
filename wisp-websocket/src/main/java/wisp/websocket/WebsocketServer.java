@@ -19,7 +19,11 @@ package wisp.websocket;
 import org.slf4j.Logger;
 import wisp.api.ServiceLocator;
 import wisp.api.ServiceModule;
-import wisp.logger.Slf4jLoggerFactory;
+import wisp.logger.api.Slf4jLoggerFactory;
+import wisp.websocket.api.WebSocketService;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A Netty-based async I/O websocket server.
@@ -29,10 +33,23 @@ import wisp.logger.Slf4jLoggerFactory;
 public class WebsocketServer implements ServiceModule {
     private Logger logger;
 
+    private final Map<String, WebSocketService> servicePaths = new HashMap<>();
+
     @Override
     public void link(ServiceLocator locator) {
         var loggerFactory = locator.firstImplementing(Slf4jLoggerFactory.class);
         logger = loggerFactory.getLogger(getClass());
+
+        for (var wss : locator.allImplementing(WebSocketService.class)) {
+            String path = wss.getPath();
+            if (servicePaths.containsKey(path)) {
+                throw new IllegalStateException("duplicate WebSocketService#getPath(): " + path);
+            } else {
+                servicePaths.put(path, wss);
+            }
+
+            logger.info("linked in {} WebSocketService on path {}", wss.getClass().getSimpleName(), path);
+        }
     }
 
     @Override

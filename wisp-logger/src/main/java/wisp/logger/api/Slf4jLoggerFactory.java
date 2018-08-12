@@ -30,32 +30,17 @@
  * limitations under the License.
  */
 
-package wisp.websocket.api;
+package wisp.logger.api;
 
-import com.typesafe.config.Config;
-import jdk.incubator.http.WebSocket;
-import wisp.api.Configurable;
-import wisp.api.Configuration;
-import wisp.api.Destroyable;
-import wisp.api.Linkable;
+import org.slf4j.ILoggerFactory;
+import org.slf4j.Logger;
+import wisp.api.ServiceModule;
 
 /**
- * Servlet-like plugin point for implementing a Websocket server-side component.
- * When first registered to listen on a particular wss:// URI it will receive an
- * {@link #onOpen(WebSocket)} callback and then subsequently will receive ping,
- * pong, text &amp; binary frame messages via {@link WebSocket.Listener} callbacks.
+ * Simple plugin interface which serves up a pre-configured SLF4J LoggerFactory.
  *
  * @author <a href="mailto:kyle.downey@gmail.com">Kyle F. Downey</a>
  */
-public interface WebSocketService extends WebSocket.Listener, Linkable, Configurable, Destroyable {
-    @Override
-    default void configure(Configuration config) { }
-
-    @Override
-    default void destroy() { }
-
-    /**
-     * Gets the distinct relative path that this service listens on.
-     */
-    String getPath();
+public interface Slf4jLoggerFactory extends ServiceModule, ILoggerFactory {
+    Logger getLogger(Class<?> clazz);
 }

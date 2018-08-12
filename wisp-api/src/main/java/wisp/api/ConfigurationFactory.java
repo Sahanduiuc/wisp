@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package wisp.logger;
+package wisp.api;
 
-import org.slf4j.ILoggerFactory;
-import org.slf4j.Logger;
-import wisp.api.ServiceModule;
+import java.io.IOException;
+import java.nio.file.Path;
 
 /**
- * Simple plugin interface which serves up a pre-configured SLF4J LoggerFactory.
+ * Plugin factory that produces {@link Configuration} objects from a file path.
  *
  * @author <a href="mailto:kyle.downey@gmail.com">Kyle F. Downey</a>
  */
-public interface Slf4jLoggerFactory extends ServiceModule, ILoggerFactory {
-    Logger getLogger(Class<?> clazz);
+public interface ConfigurationFactory {
+    boolean canHandle(Path sourceFilePath);
+    Configuration parse(Path sourceFilePath) throws IOException;
 }
