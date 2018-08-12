@@ -17,6 +17,11 @@ package wisp.boot;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.Option;
+import wisp.api.Configuration;
+import wisp.api.ConfigurationFactory;
 import wisp.api.Destroyable;
 import wisp.api.ServiceModule;
 
@@ -38,15 +43,41 @@ import java.util.*;
 public class WispBoot implements Destroyable {
     private DefaultServiceLocator locator;
 
-    public static void main(String[] args) {
-        new WispBoot().startAll(args[0]);
+    @Option(name="-b", aliases={ "--base-dir"}, usage="Base installation directory")
+    private String baseDir;
+
+    @Option(name="-m", aliases={ "--module-dir"}, usage="Directory holding the ServiceModule definitions")
+    private String modulesDir;
+
+    @Option(name="-c", aliases={ "--config"}, usage="Master configuration file path")
+    private String configFile;
+
+    public static void main(String[] args) throws IOException {
+        WispBoot boot = new WispBoot();
+        CmdLineParser parser = new CmdLineParser(boot);
+        try {
+            parser.parseArgument(args);
+            boot.startAll();
+        } catch (CmdLineException e) {
+            System.err.println(e.getMessage());
+            parser.printUsage(System.err);
+        }
     }
 
     @SuppressWarnings("WeakerAccess")
-    void startAll(String baseDir) {
+    void startAll() throws IOException {
         locator = new DefaultServiceLocator();
         var moduleDirs = new ArrayList<ServiceModuleDir>();
-        var smlibPath = Paths.get(baseDir, "modules").toAbsolutePath().normalize();
+
+        Path smlibPath;
+        if (modulesDir != null) {
+            smlibPath = Paths.get(modulesDir);
+        } else {
+            smlibPath = Paths.get(baseDir, "modules");
+        }
+        smlibPath = smlibPath.toAbsolutePath().normalize();
+        System.out.println("Scanning ServiceModule directory: " + smlibPath);
+
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(smlibPath, file -> Files.isDirectory(file))) {
             for (Path path : stream) {
                 moduleDirs.add(new ServiceModuleDir(path));
@@ -80,10 +111,24 @@ public class WispBoot implements Destroyable {
             locator.registerServiceModule(smod);
         }
 
-        // interim solution before we handle command line options for configuration
-        Config config = ConfigFactory.load(ClassLoader.getSystemClassLoader(), "boot.conf");
-        locator.configure(new HoconConfigurationFactory().create(config));
+        Configuration configuration = null;
+        if (configFile != null) {
+            var configPath = Paths.get(configFile);
+            for (var cfgFactory : ServiceLoader.load(ConfigurationFactory.class)) {
+                if (cfgFactory.canHandle(configPath)) {
+                    configuration = cfgFactory.parse(configPath);
+                    break;
+                }
+            }
+        } else {
+            Config config = ConfigFactory.load(ClassLoader.getSystemClassLoader(), "boot.conf");
+            configuration = new HoconConfigurationFactory().create(config);
+        }
 
+        if (configuration == null) {
+            throw new IllegalArgumentException("unable to handle configuration type: " + configFile);
+        }
+        locator.configure(configuration);
         locator.linkAll();
         locator.startAll();
     }
