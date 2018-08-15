@@ -32,7 +32,6 @@
 
 package wisp.websocket.api;
 
-import com.typesafe.config.Config;
 import jdk.incubator.http.WebSocket;
 import wisp.api.Configurable;
 import wisp.api.Configuration;
