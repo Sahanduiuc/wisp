@@ -15,7 +15,6 @@
  */
 package wisp.boot;
 
-import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -31,7 +30,10 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.ServiceLoader;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 /**
  * Main entry point for the Wisp microservices server. WispBoot takes care of loading all {@link ServiceModule}
@@ -53,8 +55,8 @@ public class WispBoot implements Destroyable {
     private String configFile;
 
     public static void main(String[] args) throws IOException {
-        WispBoot boot = new WispBoot();
-        CmdLineParser parser = new CmdLineParser(boot);
+        var boot = new WispBoot();
+        var parser = new CmdLineParser(boot);
         try {
             parser.parseArgument(args);
             boot.startAll();
@@ -99,8 +101,8 @@ public class WispBoot implements Destroyable {
         var layer = ModuleLayer.boot().defineModulesWithOneLoader(cf, ClassLoader.getSystemClassLoader());
 
         System.out.println("Created layer containing the following modules:");
-        for (var module : layer.modules()) {
-            var moduleName = module.getName();
+        var moduleNames = layer.modules().stream().map(Module::getName).collect(Collectors.toSet());
+        for (var moduleName : new TreeSet<>(moduleNames)) {
             if (rootModuleNames.contains(moduleName)) {
                 System.out.println("  * " + moduleName);
             } else {
@@ -121,7 +123,7 @@ public class WispBoot implements Destroyable {
                 }
             }
         } else {
-            Config config = ConfigFactory.load(ClassLoader.getSystemClassLoader(), "boot.conf");
+            var config = ConfigFactory.load(ClassLoader.getSystemClassLoader(), "boot.conf");
             configuration = new HoconConfigurationFactory().create(config);
         }
 
