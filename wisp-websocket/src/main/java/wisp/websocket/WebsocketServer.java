@@ -27,13 +27,13 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
 import org.slf4j.Logger;
-import wisp.api.ServiceLocator;
+import org.slf4j.LoggerFactory;
 import wisp.api.ServiceModule;
-import wisp.logger.api.Slf4jLoggerFactory;
 import wisp.websocket.api.WebSocketService;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ServiceLoader;
 
 /**
  * A Netty-based async I/O websocket server.
@@ -41,30 +41,24 @@ import java.util.Map;
  * @author <a href="mailto:kyle.downey@gmail.com">Kyle F. Downey</a>
  */
 public class WebsocketServer implements ServiceModule {
-    private Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(WebsocketServer.class);
 
     private final Map<String, WebSocketService> servicePaths = new HashMap<>();
 
     @Override
-    public void link(ServiceLocator locator) {
-        var loggerFactory = locator.firstImplementing(Slf4jLoggerFactory.class);
-        logger = loggerFactory.getLogger(getClass());
+    public void start() {
+        logger.info("starting {} module", getClass().getSimpleName());
 
-        for (var wss : locator.allImplementing(WebSocketService.class)) {
+        // find all WebSocketServices in our ModuleLayer
+        for (var wss : ServiceLoader.load(getClass().getModule().getLayer(), WebSocketService.class)) {
             String path = wss.getPath();
             if (servicePaths.containsKey(path)) {
                 throw new IllegalStateException("duplicate WebSocketService#getPath(): " + path);
             } else {
                 servicePaths.put(path, wss);
             }
-
-            logger.info("linked in {} WebSocketService on path {}", wss.getClass().getSimpleName(), path);
+            logger.info("registered {} on path {}", wss.getClass().getSimpleName(), path);
         }
-    }
-
-    @Override
-    public void start() {
-        logger.info("starting {} module", getClass().getSimpleName());
 
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -81,7 +75,7 @@ public class WebsocketServer implements ServiceModule {
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
-                    .childHandler(new WebSocketServerInitializer(sslCtx));
+                    .childHandler(new WebSocketServerInitializer(sslCtx, servicePaths));
 
             Channel ch = b.bind(PORT).sync().channel();
 

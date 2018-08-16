@@ -13,6 +13,7 @@ module wisp.boot {
    opens wisp.boot to args4j;
 
    uses wisp.api.ConfigurationFactory;
+   uses wisp.api.LogInitializer;
    uses wisp.api.ServiceModule;
 
    provides wisp.api.ConfigurationFactory

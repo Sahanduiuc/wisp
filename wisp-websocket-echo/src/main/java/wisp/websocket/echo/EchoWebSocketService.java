@@ -14,14 +14,28 @@
  * limitations under the License.
  */
 
-package wisp.api;
+package wisp.websocket.echo;
+
+import jdk.incubator.http.WebSocket;
+import wisp.websocket.api.WebSocketService;
+
+import java.util.Locale;
+import java.util.concurrent.CompletionStage;
 
 /**
- * Lifecycle interface for components which can dynamically link in other {@link ServiceModule}s
- * by looking them up from the module path.
+ * Simple websocket service that echoes back its input.
  *
  * @author <a href="mailto:kyle.downey@gmail.com">Kyle F. Downey</a>
  */
-public interface Linkable {
-    void link(ServiceLocator locator);
+public class EchoWebSocketService implements WebSocketService {
+    @Override
+    public String getPath() {
+        return "/echo";
+    }
+
+    @Override
+    public CompletionStage<?> onText(WebSocket webSocket, CharSequence message, WebSocket.MessagePart part) {
+        webSocket.sendText(message.toString().toUpperCase(Locale.US), true);
+        return null;
+    }
 }

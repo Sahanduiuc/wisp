@@ -1,1 +1,1 @@
-include ':wisp-api', ':wisp-logger', ':wisp-boot', ':wisp-websocket'
+include ':wisp-api', ':wisp-logger', ':wisp-boot', ':wisp-websocket', ':wisp-websocket-echo'

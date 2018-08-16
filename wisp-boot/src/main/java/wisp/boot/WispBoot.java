@@ -19,10 +19,7 @@ import com.typesafe.config.ConfigFactory;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
-import wisp.api.Configuration;
-import wisp.api.ConfigurationFactory;
-import wisp.api.Destroyable;
-import wisp.api.ServiceModule;
+import wisp.api.*;
 
 import java.io.IOException;
 import java.lang.module.ModuleFinder;
@@ -43,7 +40,7 @@ import java.util.stream.Collectors;
  * @author <a href="mailto:kyle.downey@gmail.com">Kyle F. Downey</a>
  */
 public class WispBoot implements Destroyable {
-    private DefaultServiceLocator locator;
+    private ServiceModuleSet locator;
 
     @Option(name="-b", aliases={ "--base-dir"}, usage="Base installation directory")
     private String baseDir;
@@ -68,7 +65,7 @@ public class WispBoot implements Destroyable {
 
     @SuppressWarnings("WeakerAccess")
     void startAll() throws IOException {
-        locator = new DefaultServiceLocator();
+        locator = new ServiceModuleSet();
         var moduleDirs = new ArrayList<ServiceModuleDir>();
 
         Path smlibPath;
@@ -109,9 +106,6 @@ public class WispBoot implements Destroyable {
                 System.out.println("  - " + moduleName);
             }
         }
-        for (var smod : ServiceLoader.load(layer, ServiceModule.class)) {
-            locator.registerServiceModule(smod);
-        }
 
         Configuration configuration = null;
         if (configFile != null) {
@@ -130,8 +124,23 @@ public class WispBoot implements Destroyable {
         if (configuration == null) {
             throw new IllegalArgumentException("unable to handle configuration type: " + configFile);
         }
+
+        // initialize logging layer
+        String logBackend = "log4j2";
+        if (configuration.hasPath("wisp.logger.logBackend")) {
+            logBackend = configuration.getString("wisp.logger.logBackend");
+        }
+        for (LogInitializer logInit : ServiceLoader.load(layer, LogInitializer.class)) {
+            if (logInit.canHandle(logBackend)) {
+                logInit.configure(configuration);
+            }
+        }
+
+        for (var smod : ServiceLoader.load(layer, ServiceModule.class)) {
+            locator.registerServiceModule(smod);
+        }
+        
         locator.configure(configuration);
-        locator.linkAll();
         locator.startAll();
     }
 

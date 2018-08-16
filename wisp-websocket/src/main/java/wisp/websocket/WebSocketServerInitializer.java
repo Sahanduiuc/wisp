@@ -23,6 +23,9 @@ import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketServerCompressionHandler;
 import io.netty.handler.ssl.SslContext;
+import wisp.websocket.api.WebSocketService;
+
+import java.util.Map;
 
 /**
  * Helper to set up Netty channel pipeline for HTTP, HTTPS and Websockets.
@@ -30,13 +33,12 @@ import io.netty.handler.ssl.SslContext;
  * @author <a href="mailto:kyle.downey@gmail.com">Kyle F. Downey</a>
  */
 public class WebSocketServerInitializer extends ChannelInitializer<SocketChannel> {
-
-    private static final String WEBSOCKET_PATH = "/websocket";
-
     private final SslContext sslCtx;
+    private final Map<String, WebSocketService> servicePaths;
 
-    WebSocketServerInitializer(SslContext sslCtx) {
+    WebSocketServerInitializer(SslContext sslCtx, Map<String, WebSocketService> servicePaths) {
         this.sslCtx = sslCtx;
+        this.servicePaths = servicePaths;
     }
 
     @Override
@@ -48,8 +50,11 @@ public class WebSocketServerInitializer extends ChannelInitializer<SocketChannel
         pipeline.addLast(new HttpServerCodec());
         pipeline.addLast(new HttpObjectAggregator(65536));
         pipeline.addLast(new WebSocketServerCompressionHandler());
-        pipeline.addLast(new WebSocketServerProtocolHandler(WEBSOCKET_PATH, null, true));
-        pipeline.addLast(new WebSocketIndexPageHandler(WEBSOCKET_PATH));
-        pipeline.addLast(new WebSocketFrameHandler());
+
+        for (var path : servicePaths.keySet()) {
+            pipeline.addLast(new WebSocketServerProtocolHandler(path, null, true));
+            pipeline.addLast(new WebSocketFrameHandler());
+            pipeline.addLast(new WebSocketIndexPageHandler(path));
+        }
     }
 }

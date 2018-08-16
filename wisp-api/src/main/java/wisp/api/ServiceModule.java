@@ -21,10 +21,7 @@ package wisp.api;
  *
  * @author <a href="mailto:kyle.downey@gmail.com">Kyle F. Downey</a>
  */
-public interface ServiceModule extends Linkable, Configurable, Destroyable {
-    @Override
-    default void link(ServiceLocator locator) { }
-
+public interface ServiceModule extends Configurable, Destroyable {
     @Override
     default void configure(Configuration config) { }
 

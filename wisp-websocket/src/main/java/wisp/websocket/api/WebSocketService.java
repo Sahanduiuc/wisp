@@ -33,10 +33,7 @@
 package wisp.websocket.api;
 
 import jdk.incubator.http.WebSocket;
-import wisp.api.Configurable;
-import wisp.api.Configuration;
-import wisp.api.Destroyable;
-import wisp.api.Linkable;
+import wisp.api.*;
 
 /**
  * Servlet-like plugin point for implementing a Websocket server-side component.
@@ -46,7 +43,7 @@ import wisp.api.Linkable;
  *
  * @author <a href="mailto:kyle.downey@gmail.com">Kyle F. Downey</a>
  */
-public interface WebSocketService extends WebSocket.Listener, Linkable, Configurable, Destroyable {
+public interface WebSocketService extends WebSocket.Listener, Configurable, Destroyable {
     @Override
     default void configure(Configuration config) { }
 

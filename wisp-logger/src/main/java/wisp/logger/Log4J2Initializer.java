@@ -14,6 +14,38 @@
  * limitations under the License.
  */
 
+/*
+ * (C) Copyright 2017 Kyle F. Downey.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * (C) Copyright 2017 Kyle F. Downey.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package wisp.logger;
 
 import org.apache.logging.log4j.Level;
@@ -24,22 +56,23 @@ import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wisp.api.Configuration;
-import wisp.logger.api.Slf4jLoggerFactory;
+import wisp.api.LogInitializer;
 
 import java.io.*;
 
 /**
- * Implementation of SLF4J's LoggerFactory which binds in a configured log4j2 logging layer
- * and provides a simple default configuration if none provided.
+ * Backend implementation for Log4J2.
  *
  * @author <a href="mailto:kyle.downey@gmail.com">Kyle F. Downey</a>
  */
-public class Log4j2LoggerFactory implements Slf4jLoggerFactory {
-    static {
-        initDefaultLogConfig();
+public class Log4J2Initializer implements LogInitializer {
+    private static final String BACKEND_TYPE = "log4j2";
+
+    @Override
+    public boolean canHandle(String backendType) {
+        return BACKEND_TYPE.equalsIgnoreCase(backendType);
     }
 
     @Override
@@ -62,22 +95,10 @@ public class Log4j2LoggerFactory implements Slf4jLoggerFactory {
                 throw new IllegalStateException("unable to init log4j2 from " + logConfigPath, e);
             }
             Configurator.initialize(null, source);
+        } else {
+            initDefaultLogConfig();
         }
-    }
-
-    @Override
-    public void start() {
-        getLogger(getClass()).info("initialized logging layer");
-    }
-
-    @Override
-    public Logger getLogger(String name) {
-        return LoggerFactory.getLogger(name);
-    }
-
-    @Override
-    public Logger getLogger(Class<?> clazz) {
-        return LoggerFactory.getLogger(clazz);
+        LoggerFactory.getLogger(getClass()).info("initialized logging layer");
     }
 
     private static void initDefaultLogConfig() {

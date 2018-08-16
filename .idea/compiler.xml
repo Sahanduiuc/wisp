@@ -29,6 +29,8 @@
       <module name="wisp-boot_test" target="1.10" />
       <module name="wisp-logger_main" target="1.10" />
       <module name="wisp-logger_test" target="1.10" />
+      <module name="wisp-websocket-echo_main" target="1.10" />
+      <module name="wisp-websocket-echo_test" target="1.10" />
       <module name="wisp-websocket_main" target="1.10" />
       <module name="wisp-websocket_test" target="1.10" />
       <module name="wisp_api" target="1.10" />

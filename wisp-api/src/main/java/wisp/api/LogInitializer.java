@@ -17,19 +17,11 @@
 package wisp.api;
 
 /**
- * A wrapper around {@link java.util.ServiceLoader} which provides additional
- * methods for looking up known services matching criteria.
+ * Service interface for classes which bootstrap a particular logging backend,
+ * e.g. log4j or logback.
  *
  * @author <a href="mailto:kyle.downey@gmail.com">Kyle F. Downey</a>
  */
-public interface ServiceLocator extends Iterable<ServiceModule> {
-    /**
-     * Gets the first returned ServiceModule implementing the given service interface.
-     */
-    <T> T firstImplementing(Class<T> interfaceClazz);
-
-    /**
-     * Gets all matching ServiceModules implementing the given service interface.
-     */
-    <T> Iterable<T> allImplementing(Class<T> interfaceClazz);
+public interface LogInitializer extends Configurable {
+    boolean canHandle(String backendType);
 }

@@ -16,8 +16,6 @@
 
 package wisp.boot;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import wisp.api.*;
 
 import javax.annotation.Nonnull;
@@ -30,32 +28,11 @@ import java.util.List;
  *
  * @author <a href="mailto:kyle.downey@gmail.com">Kyle F. Downey</a>
  */
-class DefaultServiceLocator implements ServiceLocator, Configurable, Destroyable {
+class ServiceModuleSet implements Iterable<ServiceModule>, Configurable, Destroyable {
     private List<ServiceModule> loadedModules = new ArrayList<>();
-    private Multimap<Class<?>, ServiceModule> modulesByInterface = HashMultimap.create();
 
     void registerServiceModule(ServiceModule smod) {
         loadedModules.add(smod);
-
-        Class<?> serviceClazz = smod.getClass();
-        do {
-            for (Class<?> interfaceClazz : serviceClazz.getInterfaces()) {
-                modulesByInterface.put(interfaceClazz, smod);
-            }
-            serviceClazz = serviceClazz.getSuperclass();
-        } while (serviceClazz != null);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T firstImplementing(@Nonnull Class<T> interfaceClazz) {
-        return (T) modulesByInterface.get(interfaceClazz).iterator().next();
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> Iterable<T> allImplementing(@Nonnull Class<T> interfaceClazz) {
-        return (Iterable<T>) modulesByInterface.get(interfaceClazz);
     }
 
     @Override
@@ -75,12 +52,6 @@ class DefaultServiceLocator implements ServiceLocator, Configurable, Destroyable
     public void destroy() {
         for (ServiceModule service : this) {
             service.destroy();
-        }
-    }
-
-    void linkAll() {
-        for (ServiceModule service : loadedModules) {
-            service.link(this);
         }
     }
 

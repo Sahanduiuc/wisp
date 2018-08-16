@@ -75,6 +75,7 @@ compileTestJava {
 }
 
 task createBootImage(type: Copy) {
+    dependsOn 'wisp-boot:installModules'
     into "$buildDir/image/boot"
     exclude "jansi*.jar"
     exclude "log4j*.jar"
@@ -83,6 +84,8 @@ task createBootImage(type: Copy) {
 }
 
 task createLoggerImage(type: Copy) {
+    dependsOn 'wisp-logger:installModules'
+
     into "$buildDir/image/modules/wisp.logger"
     exclude "args4j*.jar"
     exclude "config*.jar"
@@ -91,6 +94,8 @@ task createLoggerImage(type: Copy) {
 }
 
 task createWebsocketImage(type: Copy) {
+    dependsOn 'wisp-websocket:installModules'
+
     into "$buildDir/image/modules/wisp.websocket"
     exclude "args4j*.jar"
     exclude "config*.jar"
@@ -101,6 +106,26 @@ task createWebsocketImage(type: Copy) {
     exclude "wisp-logger*.jar"
     from "wisp-websocket/build/modules"
 }
+
+task createWebsocketEchoImage(type: Copy) {
+    dependsOn 'wisp-websocket-echo:installModules'
+
+    into "$buildDir/image/modules/wisp.websocket.echo"
+    include "wisp-websocket-echo*.jar"
+    from "wisp-websocket-echo/build/modules"
+}
+
+task createImage {
+    dependsOn 'createBootImage'
+    dependsOn 'createLoggerImage'
+    dependsOn 'createWebsocketImage'
+    dependsOn 'createWebsocketEchoImage'
+}
+
+install.dependsOn createBootImage
+install.dependsOn createLoggerImage
+install.dependsOn createWebsocketImage
+install.dependsOn createWebsocketEchoImage
 
 task wrapper(type: Wrapper) {
     gradleVersion = '4.9'
@@ -167,5 +192,11 @@ project(':wisp-websocket') {
                 'io.netty:netty-codec-http:4.1.28.Final',
                 'io.netty:netty-handler:4.1.28.Final',
                 'org.bouncycastle:bcpkix-jdk15on:1.58'
+    }
+}
+
+project (':wisp-websocket-echo') {
+    dependencies {
+        compile project (':wisp-websocket')
     }
 }

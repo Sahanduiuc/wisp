@@ -15,6 +15,9 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/wisp-logger/wisp-logger_main.iml" filepath="$PROJECT_DIR$/.idea/modules/wisp-logger/wisp-logger_main.iml" group="wisp-logger" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/wisp-logger/wisp-logger_test.iml" filepath="$PROJECT_DIR$/.idea/modules/wisp-logger/wisp-logger_test.iml" group="wisp-logger" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/wisp-websocket/wisp-websocket.iml" filepath="$PROJECT_DIR$/.idea/modules/wisp-websocket/wisp-websocket.iml" group="wisp-websocket" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/wisp-websocket-echo/wisp-websocket-echo.iml" filepath="$PROJECT_DIR$/.idea/modules/wisp-websocket-echo/wisp-websocket-echo.iml" group="wisp-websocket-echo" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/wisp-websocket-echo/wisp-websocket-echo_main.iml" filepath="$PROJECT_DIR$/.idea/modules/wisp-websocket-echo/wisp-websocket-echo_main.iml" group="wisp-websocket-echo" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/wisp-websocket-echo/wisp-websocket-echo_test.iml" filepath="$PROJECT_DIR$/.idea/modules/wisp-websocket-echo/wisp-websocket-echo_test.iml" group="wisp-websocket-echo" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/wisp-websocket/wisp-websocket_main.iml" filepath="$PROJECT_DIR$/.idea/modules/wisp-websocket/wisp-websocket_main.iml" group="wisp-websocket" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/wisp-websocket/wisp-websocket_test.iml" filepath="$PROJECT_DIR$/.idea/modules/wisp-websocket/wisp-websocket_test.iml" group="wisp-websocket" />
     </modules>
