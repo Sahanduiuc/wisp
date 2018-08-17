@@ -28,6 +28,7 @@ import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wisp.api.Configuration;
 import wisp.api.ServiceModule;
 import wisp.websocket.api.WebSocketService;
 
@@ -46,9 +47,7 @@ public class WebsocketServer implements ServiceModule {
     private final Map<String, WebSocketService> servicePaths = new HashMap<>();
 
     @Override
-    public void start() {
-        logger.info("starting {} module", getClass().getSimpleName());
-
+    public void configure(Configuration config) {
         // find all WebSocketServices in our ModuleLayer
         for (var wss : ServiceLoader.load(getClass().getModule().getLayer(), WebSocketService.class)) {
             String path = wss.getPath();
@@ -58,7 +57,13 @@ public class WebsocketServer implements ServiceModule {
                 servicePaths.put(path, wss);
             }
             logger.info("registered {} on path {}", wss.getClass().getSimpleName(), path);
+            wss.configure(config);
         }
+    }
+
+    @Override
+    public void start() {
+        logger.info("starting {} module", getClass().getSimpleName());
 
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();

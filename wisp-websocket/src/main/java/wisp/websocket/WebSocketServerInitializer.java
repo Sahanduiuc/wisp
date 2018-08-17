@@ -52,9 +52,9 @@ public class WebSocketServerInitializer extends ChannelInitializer<SocketChannel
         pipeline.addLast(new WebSocketServerCompressionHandler());
 
         for (var path : servicePaths.keySet()) {
+            var wss = servicePaths.get(path);
             pipeline.addLast(new WebSocketServerProtocolHandler(path, null, true));
-            pipeline.addLast(new WebSocketFrameHandler());
-            pipeline.addLast(new WebSocketIndexPageHandler(path));
+            pipeline.addLast(new WebSocketFrameHandler(wss));
         }
     }
 }
