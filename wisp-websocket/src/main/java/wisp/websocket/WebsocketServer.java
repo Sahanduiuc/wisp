@@ -46,6 +46,9 @@ public class WebsocketServer implements ServiceModule {
 
     private final Map<String, WebSocketService> servicePaths = new HashMap<>();
 
+    private boolean ssl = false;
+    private int port = 8080;
+
     @Override
     public void configure(Configuration config) {
         // find all WebSocketServices in our ModuleLayer
@@ -59,6 +62,14 @@ public class WebsocketServer implements ServiceModule {
             logger.info("registered {} on path {}", wss.getClass().getSimpleName(), path);
             wss.configure(config);
         }
+
+        if (config.hasPath("wisp.websocket.ssl")) {
+            ssl = config.getBoolean("wisp.websocket.ssl");
+        }
+
+        if (config.hasPath("wisp.websocket.port")) {
+            port = config.getInt("wisp.websocket.port");
+        }
     }
 
     @Override
@@ -69,7 +80,7 @@ public class WebsocketServer implements ServiceModule {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
             final SslContext sslCtx;
-            if (SSL) {
+            if (ssl) {
                 SelfSignedCertificate ssc = new SelfSignedCertificate();
                 sslCtx = SslContextBuilder.forServer(ssc.certificate(), ssc.privateKey()).build();
             } else {
@@ -82,10 +93,8 @@ public class WebsocketServer implements ServiceModule {
                     .handler(new LoggingHandler(LogLevel.INFO))
                     .childHandler(new WebSocketServerInitializer(sslCtx, servicePaths));
 
-            Channel ch = b.bind(PORT).sync().channel();
-
-            System.out.println("Open your web browser and navigate to " +
-                    (SSL ? "https" : "http") + "://127.0.0.1:" + PORT + '/');
+            Channel ch = b.bind(port).sync().channel();
+            logger.info("listening on port " + port);
 
             ch.closeFuture().sync();
         } catch (Exception e) {
@@ -95,9 +104,6 @@ public class WebsocketServer implements ServiceModule {
             workerGroup.shutdownGracefully();
         }
     }
-
-    private static final boolean SSL = System.getProperty("ssl") != null;
-    private static final int PORT = Integer.parseInt(System.getProperty("port", SSL ? "8443" : "8080"));
 
     @Override
     public void stop() {
