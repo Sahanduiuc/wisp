@@ -22,8 +22,8 @@ allprojects {
     // global settings
     group 'io.cloudwall'
     version '0.1.0'
-    sourceCompatibility = JavaVersion.VERSION_1_10
-    targetCompatibility = JavaVersion.VERSION_1_10
+    sourceCompatibility = '1.11'
+    targetCompatibility = '1.11'
     repositories {
         jcenter()
         maven { url "https://jitpack.io" }

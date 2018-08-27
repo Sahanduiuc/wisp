@@ -20,9 +20,9 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.websocketx.*;
-import jdk.incubator.http.WebSocket;
 import wisp.websocket.api.WebSocketService;
 
+import java.net.http.WebSocket;
 import java.nio.ByteBuffer;
 import java.util.concurrent.CompletableFuture;
 
@@ -42,9 +42,9 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
     protected void channelRead0(ChannelHandlerContext ctx, WebSocketFrame frame) {
         // ping and pong frames already handled
         if (frame instanceof TextWebSocketFrame) {
-            wss.onText(new WebSocketImpl(ctx), ((TextWebSocketFrame) frame).text(), WebSocket.MessagePart.WHOLE);
+            wss.onText(new WebSocketImpl(ctx), ((TextWebSocketFrame) frame).text(), true);
         } else if (frame instanceof BinaryWebSocketFrame) {
-            wss.onBinary(new WebSocketImpl(ctx), frame.content().nioBuffer(), WebSocket.MessagePart.WHOLE);
+            wss.onBinary(new WebSocketImpl(ctx), frame.content().nioBuffer(), true);
         } else if (frame instanceof CloseWebSocketFrame) {
             wss.onClose(new WebSocketImpl(ctx), ((CloseWebSocketFrame) frame).statusCode(),
                     ((CloseWebSocketFrame) frame).reasonText());

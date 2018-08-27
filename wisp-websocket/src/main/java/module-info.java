@@ -1,7 +1,7 @@
 module wisp.websocket {
     exports wisp.websocket.api;
 
-    requires jdk.incubator.httpclient;
+    requires java.net.http;
     requires io.netty.buffer;
     requires io.netty.codec;
     requires io.netty.codec.http;

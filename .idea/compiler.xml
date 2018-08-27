@@ -17,26 +17,18 @@
       <profile default="true" name="Default" enabled="true" />
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
-      <module name="api_main" target="1.10" />
-      <module name="api_test" target="1.10" />
-      <module name="boot_main" target="1.10" />
-      <module name="boot_test" target="1.10" />
-      <module name="io.cloudwall-wisp_main" target="1.10" />
-      <module name="io.cloudwall-wisp_test" target="1.10" />
-      <module name="wisp-api_main" target="1.10" />
-      <module name="wisp-api_test" target="1.10" />
-      <module name="wisp-boot_main" target="1.10" />
-      <module name="wisp-boot_test" target="1.10" />
-      <module name="wisp-logger_main" target="1.10" />
-      <module name="wisp-logger_test" target="1.10" />
-      <module name="wisp-websocket-echo_main" target="1.10" />
-      <module name="wisp-websocket-echo_test" target="1.10" />
-      <module name="wisp-websocket_main" target="1.10" />
-      <module name="wisp-websocket_test" target="1.10" />
-      <module name="wisp_api" target="1.10" />
-      <module name="wisp_boot" target="1.10" />
-      <module name="wisp_main" target="1.10" />
-      <module name="wisp_test" target="1.10" />
+      <module name="io.cloudwall-wisp_main" target="11" />
+      <module name="io.cloudwall-wisp_test" target="11" />
+      <module name="wisp-api_main" target="11" />
+      <module name="wisp-api_test" target="11" />
+      <module name="wisp-boot_main" target="11" />
+      <module name="wisp-boot_test" target="11" />
+      <module name="wisp-logger_main" target="11" />
+      <module name="wisp-logger_test" target="11" />
+      <module name="wisp-websocket-echo_main" target="11" />
+      <module name="wisp-websocket-echo_test" target="11" />
+      <module name="wisp-websocket_main" target="11" />
+      <module name="wisp-websocket_test" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

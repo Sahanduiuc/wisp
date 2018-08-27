@@ -32,8 +32,9 @@
 
 package wisp.websocket.api;
 
-import jdk.incubator.http.WebSocket;
 import wisp.api.*;
+
+import java.net.http.WebSocket;
 
 /**
  * Servlet-like plugin point for implementing a Websocket server-side component.

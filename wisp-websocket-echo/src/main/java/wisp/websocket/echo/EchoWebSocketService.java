@@ -16,9 +16,9 @@
 
 package wisp.websocket.echo;
 
-import jdk.incubator.http.WebSocket;
 import wisp.websocket.api.WebSocketService;
 
+import java.net.http.WebSocket;
 import java.util.Locale;
 import java.util.concurrent.CompletionStage;
 
@@ -34,7 +34,7 @@ public class EchoWebSocketService implements WebSocketService {
     }
 
     @Override
-    public CompletionStage<?> onText(WebSocket webSocket, CharSequence message, WebSocket.MessagePart part) {
+    public CompletionStage<?> onText(WebSocket webSocket, CharSequence message, boolean lastMessage) {
         webSocket.sendText(message.toString().toUpperCase(Locale.US), true);
         return null;
     }
